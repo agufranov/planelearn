@@ -39,8 +39,10 @@ export default class Renderer {
         ctx.save()
         ctx.setTransform(this.scale, 0, 0, -this.scale, 100, this.ctx.canvas.height - 100)
         ctx.beginPath()
-        ctx.moveTo(plane.x, plane.y)
-        ctx.lineTo(plane.x + Math.cos(plane.hd) * 5, plane.y + Math.sin(plane.hd) * 5)
+        // ctx.moveTo(plane.x, plane.y)
+        // ctx.lineTo(plane.x + Math.cos(plane.hd) * 5, plane.y + Math.sin(plane.hd) * 5)
+        ctx.moveTo(plane.oldX, plane.oldY)
+        ctx.lineTo(plane.x, plane.y)
         ctx.restore()
         ctx.stroke()
     }

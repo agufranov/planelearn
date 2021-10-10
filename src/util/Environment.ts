@@ -1,17 +1,11 @@
 import { irand, range } from './util'
 
-interface IPole {
-    x: number
-    height: number
-    up: boolean
-}
-
-class Pole implements IPole {
+export class Pole {
     x: number
     height: number
     up: boolean
 
-    constructor({ x, height, up }: IPole) {
+    constructor({ x, height, up }: { x: number, height: number, up: boolean }) {
         this.x = x
         this.height = height
         this.up = up
@@ -19,18 +13,18 @@ class Pole implements IPole {
 }
 
 export default class Environment {
-    poles: IPole[]
+    poles: Pole[]
     height: number
     length: number
 
-    constructor({ poles, height, length }: { poles: IPole[], height: number, length: number }) {
+    constructor({ poles, height, length }: { poles: Pole[], height: number, length: number }) {
         this.poles = poles
         this.height = height
         this.length = length
     }
 
     static generate({ length, gapFrom, gapTo, height }: { length: number, gapFrom: number, gapTo: number, height: number }) {
-        const poles: IPole[] = []
+        const poles: Pole[] = []
         let x = irand(gapFrom, gapTo)
         let up = true
         while (x <= length) {

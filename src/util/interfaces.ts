@@ -5,3 +5,10 @@ interface Robot {
 type BinaryControls<Names extends string> = {
     [name in Names]: boolean
 }
+
+interface SimulationBase {
+    dt: number
+    isFinished: boolean
+
+    calc: () => void
+}

@@ -21,22 +21,26 @@ const game = ref()
 const q = ref(1)
 
 setSize()
+let simulation = ref()
 
 onMounted(() => {
   window.addEventListener('resize', setSize)
   const env = Environment.generate({ length: 100, gapFrom: 5, gapTo: 20, height: 20 })
-  const simulation = new Simulation(env, 10)
-  const renderer = new Renderer(canvas.value, env, simulation.plane)
-  simulation.onTick = renderer.render
-  simulation.start()
+  simulation.value = new Simulation(env, 200)
+  const renderer = new Renderer(canvas.value, env, simulation.value.plane)
+  simulation.value.onTick = () => {
+    renderer.render()
+    q.value++
+  }
+  simulation.value.start()
 })
 </script>
 
 <template>
   <canvas :width="width" :height="height" ref="canvas" />
-  <pre v-if="game">
+  <pre v-if="simulation">
     {{q}}
-    {{game.plane.hd}}
+    {{simulation.nextPole?.x}}
   </pre>
 </template>
 
