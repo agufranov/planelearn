@@ -1,39 +1,40 @@
 import Environment from './Environment'
 import Plane from './Plane'
+import Population from './Population'
+import Simulation from './Simulation'
 
 export default class Renderer {
-    env: Environment
-    plane: Plane
     ctx: CanvasRenderingContext2D
     scale = 8
 
-    constructor(canvas: HTMLCanvasElement, env: Environment, plane: plane) {
+    constructor(canvas: HTMLCanvasElement) {
         this.ctx = canvas.getContext('2d')!
-        this.env = env
-        this.plane = plane
     }
 
-    renderEnvironment() {
-        const { ctx, env } = this
+    renderEnvironment(env: Environment) {
+        this.clear()
+
+        const { ctx, scale } = this
 
         ctx.strokeStyle = 'blue'
         ctx.save()
-        ctx.setTransform(this.scale, 0, 0, -this.scale, 100, this.ctx.canvas.height - 100)
+        ctx.setTransform(scale, 0, 0, -scale, 100, ctx.canvas.height - 100)
         ctx.beginPath()
         ctx.moveTo(0, 0)
         ctx.lineTo(env.length, 0)
         ctx.moveTo(0, env.height)
         ctx.lineTo(env.length, env.height)
-        env.poles.forEach(({ x, height, up }) => {
-            ctx.moveTo(x, up ? 0 : env.height)
-            ctx.lineTo(x, up ? height: env.height - height)
+        env.poles.forEach(pole => {
+            const line = pole.getLine(env.height)
+            ctx.moveTo(...line.slice(0, 2) as [number, number])
+            ctx.lineTo(...line.slice(2) as [number, number])
         })
         ctx.restore()
         ctx.stroke()
     }
 
     renderPlane() {
-        const { ctx, plane } = this
+        const { ctx, sim: { env, plane } } = this
 
         ctx.strokeStyle = 'green'
         ctx.save()
@@ -45,6 +46,31 @@ export default class Renderer {
         ctx.lineTo(plane.x, plane.y)
         ctx.restore()
         ctx.stroke()
+    }
+
+    renderSimulation = (sim: Simulation) => {
+        const { ctx, scale } = this
+        const { points } = sim
+
+        ctx.strokeStyle = 'green'
+        ctx.save()
+        ctx.setTransform(scale, 0, 0, -scale, 100, ctx.canvas.height - 100)
+        ctx.beginPath()
+        points.forEach(([x, y]) => {
+            ctx.lineTo(x, y)
+        })
+        ctx.restore()
+        ctx.stroke()
+    }
+
+    renderPopulation = (pop: Population) => {
+        pop.simulations.forEach(this.renderSimulation)
+    }
+
+    clear() {
+        const { ctx } = this
+        
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     }
 
     render = () => {

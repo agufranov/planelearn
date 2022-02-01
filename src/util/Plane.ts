@@ -13,8 +13,8 @@ export default class Plane implements Robot {
     hd: number
     controls: BinaryControls<PlaneSimplePitchControls>
     opts: PlaneOpts = {
-        speed: 20,
-        pitchSpeed: 8
+        speed: 15,
+        pitchSpeed: 6
     }
 
     constructor({ x, y, hd, controls }: { x: number, y: number, hd: number, controls: BinaryControls<PlaneSimplePitchControls> }) {
@@ -36,5 +36,9 @@ export default class Plane implements Robot {
         if(controls.up || controls.down) {
             this.hd += (controls.up ? 1 : -1) * opts.pitchSpeed * dt$
         }
+    }
+
+    getTrajectorySegment(): Segment {
+        return [this.oldX, this.oldY, this.x, this.y]
     }
 }
